@@ -273,7 +273,11 @@
     donutCats.forEach(function(c,i){
       var sweep=(c.base/Math.max(BASE,1))*Math.PI*2;
       var path=document.createElementNS("http://www.w3.org/2000/svg","path");
-      path.setAttribute("d",arc(ang,ang+Math.max(sweep,0.001)));
+      // Cap just short of a full turn: an SVG arc whose endpoint equals its start point
+      // is omitted entirely by the spec, so a single category at 100% would draw nothing
+      // but a radial line. The app's donut avoids this via its slice gap; this is the
+      // equivalent guard here. Leaves a hairline notch, same as the app.
+      path.setAttribute("d",arc(ang,ang+Math.min(Math.max(sweep,0.001),Math.PI*2-0.02)));
       path.setAttribute("fill",c.color);
       path.setAttribute("stroke","#EDE6D6");
       path.setAttribute("stroke-width","2.5");
