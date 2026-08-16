@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to use Baseweight — the full guide</title>
+<meta name="description" content="How to use Baseweight: build a gear list, understand base vs pack vs total weight, tag worn and consumable items, install it on your phone home screen, share your list, and back up your data.">
+<meta property="og:title" content="How to use Baseweight">
+<meta property="og:description" content="Build a gear list, read your breakdown, install it on your phone, share it, and keep your data safe.">
+<meta property="og:type" content="article">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --paper:#EDE6D6;
+    --paper-alt:#E4DAC4;
+    --card:#F6F1E6;
+    --ink:#26231C;
+    --ink-soft:#6B6353;
+    --line:#D6CAB1;
+    --line-soft:#E3D9C4;
+    --accent:#3A6B4F;
+    --accent-deep:#2A4F3A;
+    --warn:#B0543A;
+    --maxw:760px;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  /* No smooth scroll-behavior here on purpose: some engines drop smooth scrolling
+     entirely rather than falling back to an instant jump, which would leave every
+     contents link looking broken. A plain jump always works. */
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Archivo',system-ui,sans-serif;
+    font-size:17px;
+    line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* faint topographic motif, same as the app shell */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;z-index:0;
+    background-image:
+      radial-gradient(circle at 18% 10%, transparent 38%, rgba(150,128,90,.10) 39%, transparent 40%),
+      radial-gradient(circle at 18% 10%, transparent 52%, rgba(150,128,90,.08) 53%, transparent 54%),
+      radial-gradient(circle at 84% 74%, transparent 30%, rgba(150,128,90,.09) 31%, transparent 32%),
+      radial-gradient(circle at 84% 74%, transparent 46%, rgba(150,128,90,.07) 47%, transparent 48%);
+  }
+  .wrap{position:relative;z-index:1;max-width:var(--maxw);margin:0 auto;padding:0 20px}
+
+  /* ---------- header ---------- */
+  header.top{padding:54px 0 26px;text-align:center}
+  .mark{display:block;margin:0 auto 14px}
+  h1{font-size:clamp(30px,6vw,44px);font-weight:800;letter-spacing:-1.1px;line-height:1.1}
+  .sub{color:var(--ink-soft);margin-top:10px;font-size:17px}
+
+  /* ---------- contents ---------- */
+  nav.toc{
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:16px 18px;margin:26px 0 8px;
+  }
+  nav.toc p{
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.2px;
+    text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:10px;
+  }
+  nav.toc ol{list-style:none;display:grid;grid-template-columns:1fr;gap:2px}
+  @media(min-width:560px){nav.toc ol{grid-template-columns:1fr 1fr;gap:2px 22px}}
+  nav.toc a{
+    display:block;padding:5px 0;color:var(--ink);text-decoration:none;font-size:15.5px;
+    border-bottom:1px solid transparent;
+  }
+  nav.toc a:hover{color:var(--accent);border-bottom-color:var(--line)}
+  nav.toc a::before{
+    content:counter(li) ".";counter-increment:li;
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft);
+    margin-right:8px;
+  }
+  nav.toc ol{counter-reset:li}
+
+  /* ---------- sections ---------- */
+  section{padding:34px 0 6px;scroll-margin-top:16px}
+  h2{
+    font-size:clamp(21px,4vw,26px);font-weight:800;letter-spacing:-.5px;line-height:1.2;
+    margin-bottom:6px;padding-top:16px;border-top:2px solid var(--line);
+  }
+  h2 .num{
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);
+    font-weight:700;display:block;margin-bottom:8px;letter-spacing:1.2px;
+  }
+  h3{font-size:17.5px;font-weight:700;margin:22px 0 6px}
+  p{margin:10px 0}
+  ul,ol.steps{margin:10px 0 10px 2px;padding-left:20px}
+  li{margin:6px 0}
+  strong{font-weight:700}
+  code{
+    font-family:'JetBrains Mono',monospace;font-size:.88em;background:var(--paper-alt);
+    padding:1px 6px;border-radius:5px;
+  }
+  a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}
+
+  /* ---------- callouts ---------- */
+  .note,.warn{
+    border-radius:14px;padding:14px 16px;margin:18px 0;font-size:15.5px;line-height:1.55;
+  }
+  .note{background:var(--card);border:1px solid var(--line)}
+  .warn{background:#F7E9E4;border:1px solid #E0BCB0}
+  .note b,.warn b{display:block;margin-bottom:3px}
+  .warn b{color:var(--warn)}
+
+  /* ---------- UI figures ---------- */
+  figure{margin:18px 0}
+  figcaption{
+    font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-soft);
+    margin-top:8px;text-align:center;
+  }
+  .ui{
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:10px 12px;box-shadow:0 2px 10px rgba(38,35,28,.05);
+  }
+  .ui-cat{
+    display:flex;align-items:center;gap:9px;padding:9px 6px;
+    border-bottom:1px solid var(--line-soft);font-weight:700;font-size:15px;
+  }
+  .swatch{width:11px;height:11px;border-radius:3px;flex:0 0 auto}
+  .ui-meta{
+    margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:11.5px;
+    color:var(--ink-soft);font-weight:400;
+  }
+  .ui-row{display:flex;align-items:center;gap:8px;padding:9px 6px}
+  .ui-row + .ui-row{border-top:1px solid var(--line-soft)}
+  .grip{color:var(--line);font-size:13px;letter-spacing:-2px;flex:0 0 auto}
+  .ui-name{flex:1;min-width:0;font-size:15px}
+  .ui-desc{display:block;font-size:12.5px;color:var(--ink-soft)}
+  .ui-wt{font-family:'JetBrains Mono',monospace;font-size:13.5px;font-weight:500;flex:0 0 auto}
+  .tag{
+    font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.6px;
+    padding:2px 5px;border-radius:4px;background:var(--paper-alt);color:var(--ink-soft);
+    margin-left:6px;vertical-align:middle;
+  }
+  .tag.worn{background:#DDE6DA;color:var(--accent-deep)}
+  .tag.cons{background:#F0E2C6;color:#8A6A22}
+
+  /* weight maths diagram */
+  .maths{display:grid;gap:8px;margin:16px 0}
+  .maths div{
+    display:flex;align-items:center;gap:10px;background:var(--card);
+    border:1px solid var(--line);border-radius:12px;padding:11px 14px;
+  }
+  .maths .lbl{font-weight:700;font-size:15px;min-width:112px}
+  .maths .eq{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--ink-soft)}
+  .maths .hi{border-color:var(--accent);background:#E8EFE6}
+
+  /* ---------- platform tabs ---------- */
+  .tabs{display:flex;gap:6px;background:var(--paper-alt);padding:5px;border-radius:13px;margin:18px 0 0}
+  .tabs button{
+    flex:1;padding:10px 6px;border:none;background:none;border-radius:9px;cursor:pointer;
+    font-family:'Archivo',sans-serif;font-weight:600;font-size:14.5px;color:var(--ink-soft);
+  }
+  .tabs button[aria-selected="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+  .panel{display:none;padding-top:4px}
+  .panel.on{display:block}
+  .detected{
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.6px;
+    text-transform:uppercase;color:var(--accent);font-weight:700;margin-top:14px;
+  }
+  ol.steps li{margin:9px 0}
+  .kbd{
+    display:inline-block;border:1px solid var(--line);background:var(--card);border-radius:6px;
+    padding:1px 7px;font-family:'JetBrains Mono',monospace;font-size:13px;
+  }
+
+  /* ---------- cta / footer ---------- */
+  .cta{
+    display:inline-block;background:var(--accent);color:#fff;text-decoration:none;
+    padding:13px 22px;border-radius:12px;font-weight:700;font-size:16px;margin:6px 8px 6px 0;
+  }
+  .cta.ghost{background:none;color:var(--accent);border:1.5px solid var(--line)}
+  footer{
+    margin-top:44px;padding:26px 0 46px;border-top:2px solid var(--line);
+    text-align:center;color:var(--ink-soft);font-size:14.5px;
+  }
+  footer a{margin:0 8px;display:inline-block}
+  .screenshot-slot{
+    border:2px dashed var(--line);border-radius:14px;padding:26px 16px;text-align:center;
+    color:var(--ink-soft);font-family:'JetBrains Mono',monospace;font-size:12px;
+    background:rgba(246,241,230,.5);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <svg class="mark" width="46" height="34" viewBox="0 0 120 88" fill="none" aria-hidden="true">
+    <path d="M8 80 L44 16 L64 50 L78 28 L112 80" stroke="#3A6B4F" stroke-width="9"
+          stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <h1>How to use Baseweight</h1>
+  <p class="sub">Build a kit list, find out where your weight actually is, and carry less.</p>
+</header>
+
+<nav class="toc">
+  <p>Contents</p>
+  <ol>
+    <li><a href="#basics">Base, pack &amp; total weight</a></li>
+    <li><a href="#start">Start your first list</a></li>
+    <li><a href="#adding">Adding gear</a></li>
+    <li><a href="#worn">Worn &amp; consumable</a></li>
+    <li><a href="#locker">The gear locker</a></li>
+    <li><a href="#breakdown">Reading the breakdown</a></li>
+    <li><a href="#checklist">Packing checklist</a></li>
+    <li><a href="#install">Install it on your phone</a></li>
+    <li><a href="#share">Sharing your list</a></li>
+    <li><a href="#backup">Backup, restore &amp; CSV</a></li>
+    <li><a href="#data">Where your data lives</a></li>
+    <li><a href="#faq">Common questions</a></li>
+  </ol>
+</nav>
+
+<!-- ───────────────────────── 1. BASICS ───────────────────────── -->
+<section id="basics">
+  <h2><span class="num">01</span>Base, pack &amp; total weight</h2>
+  <p>
+    Nearly every argument about pack weight comes down to people measuring different things.
+    Baseweight tracks three numbers, and the difference between them is the whole point.
+  </p>
+
+  <div class="maths">
+    <div class="hi">
+      <span class="lbl">Base weight</span>
+      <span class="eq">everything except worn items and consumables</span>
+    </div>
+    <div>
+      <span class="lbl">Pack weight</span>
+      <span class="eq">base + consumables — what's on your back leaving the trailhead</span>
+    </div>
+    <div>
+      <span class="lbl">Total weight</span>
+      <span class="eq">pack + what you're wearing — every gram you're moving</span>
+    </div>
+  </div>
+
+  <p>
+    <strong>Base weight</strong> is the one people quote, because it's the only one that doesn't
+    change during a trip. Your food and water shrink as you walk; your tent doesn't. It's the
+    honest measure of your kit choices.
+  </p>
+  <div class="note">
+    <b>Why this matters</b>
+    A 7 kg base weight and a 7 kg pack weight are wildly different loads. If someone quotes a
+    number without saying which one it is, it's meaningless.
+  </div>
+</section>
+
+<!-- ───────────────────────── 2. START ───────────────────────── -->
+<section id="start">
+  <h2><span class="num">02</span>Start your first list</h2>
+  <p>
+    When you first open Baseweight you get a starter list called <strong>My Gear List</strong>,
+    already set up with the usual categories, plus an <strong>Example: Cape Wrath Trail</strong>
+    list you can poke around in to see what a finished list looks like.
+  </p>
+  <ol class="steps">
+    <li>Tap the list card on the home screen to open it.</li>
+    <li>Tap <strong>+ Add item</strong> under any category.</li>
+    <li>Type the name, weight and quantity, then <strong>Save item</strong>.</li>
+  </ol>
+  <p>
+    To rename a list, add another, duplicate or delete one, open <strong>Your lists</strong> from
+    the home screen. Keep separate lists for separate trips — summer overnighter, winter week,
+    bikepacking — and duplicate an existing one as a starting point rather than building from
+    scratch each time.
+  </p>
+  <h3>Categories</h3>
+  <p>
+    Categories are yours to shape. Rename them, recolour them, add your own, and drag the handle
+    on the left to reorder both categories and the items inside them.
+  </p>
+
+  <figure>
+    <div class="ui">
+      <div class="ui-cat"><span class="swatch" style="background:#2F4B3F"></span>Shelter<span class="ui-meta">630 g · 6%</span></div>
+      <div class="ui-row">
+        <span class="grip">⠿</span>
+        <span class="ui-name">Durston X-Mid 1 Pro<span class="ui-desc">Lightweight DCF trekking pole tent</span></span>
+        <span class="ui-wt">530 g</span>
+      </div>
+      <div class="ui-row">
+        <span class="grip">⠿</span>
+        <span class="ui-name">10× Tent Pegs<span class="ui-desc">Big Agnes UL tent pegs</span></span>
+        <span class="ui-wt">100 g</span>
+      </div>
+    </div>
+    <figcaption>A category with two items — drag ⠿ to reorder</figcaption>
+  </figure>
+</section>
+
+<!-- ───────────────────────── 3. ADDING ───────────────────────── -->
+<section id="adding">
+  <h2><span class="num">03</span>Adding gear</h2>
+  <p>
+    Start typing an item name and Baseweight searches a catalogue of <strong>518 real
+    products</strong> — tents, quilts, packs, stoves, shoes. Pick one and the weight fills itself
+    in. Type <code>durs</code> and you'll get the Durston shelters; type <code>sawyer</code> and
+    you'll get the filters.
+  </p>
+  <p>
+    On a computer the name field is focused the moment you hit <strong>+ Add item</strong>, so you
+    can start typing straight away without reaching for the mouse.
+  </p>
+  <div class="note">
+    <b>Catalogue weights are manufacturer specs</b>
+    They're a starting point, not gospel. Real-world weights vary, and your scales always win —
+    every catalogue weight is editable the moment you add it. Three conventions worth knowing:
+    <ul>
+      <li><strong>Shelters</strong> are minimum trail weight — inner, fly and poles, no stakes or
+        stuff sacks. Add your stakes as their own item.</li>
+      <li><strong>Clothing</strong> is labelled with the cut and size it was weighed in, e.g.
+        <em>(men's M)</em> or <em>(women's S)</em>. Neither is "the default".</li>
+      <li><strong>Footwear</strong> is a pair, e.g. <em>(pair, men's US 9)</em>.</li>
+    </ul>
+  </div>
+  <h3>Deleting an item</h3>
+  <p>
+    On a phone, <strong>swipe an item left</strong> to reveal the delete button. On a computer,
+    <strong>hover over the row</strong> and a bin icon appears on the right. You can also open any
+    item and use <strong>Delete item</strong>.
+  </p>
+</section>
+
+<!-- ───────────────────────── 4. WORN & CONSUMABLE ───────────────────────── -->
+<section id="worn">
+  <h2><span class="num">04</span>Worn &amp; consumable</h2>
+  <p>
+    These two tags are what make your base weight correct, and they're the part people most often
+    get wrong. Open any item to toggle them.
+  </p>
+  <ul>
+    <li><strong>Worn</strong> — you're wearing or carrying it on your body, not in your pack.
+      Shoes, shirt, shorts, cap, watch, trekking poles in your hands.</li>
+    <li><strong>Consumable</strong> — you'll use it up. Food, water, fuel, sunscreen, toilet paper.</li>
+  </ul>
+  <p>
+    Both are excluded from base weight. Worn items are also excluded from pack weight, because
+    they aren't on your back.
+  </p>
+
+  <figure>
+    <div class="ui">
+      <div class="ui-row">
+        <span class="grip">⠿</span>
+        <span class="ui-name">Brooks Cascadia 18 Trail Runners<span class="tag worn">WORN</span></span>
+        <span class="ui-wt">620 g</span>
+      </div>
+      <div class="ui-row">
+        <span class="grip">⠿</span>
+        <span class="ui-name">3× Freeze Dried Meals<span class="tag cons">CONS</span><span class="ui-desc">Dinners</span></span>
+        <span class="ui-wt">450 g</span>
+      </div>
+    </div>
+    <figcaption>Tagged items still count toward total weight — just not base</figcaption>
+  </figure>
+
+  <div class="note">
+    <b>Rule of thumb</b>
+    If you'd still be carrying it on day five, it belongs in base weight. If you'll have eaten,
+    drunk or burned it, it's consumable. If it never goes in the pack, it's worn.
+  </div>
+</section>
+
+<!-- ───────────────────────── 5. LOCKER ───────────────────────── -->
+<section id="locker">
+  <h2><span class="num">05</span>The gear locker</h2>
+  <p>
+    The locker is your own gear cupboard. Weigh something once, save it, and drop it into any
+    future list without typing it again — with your real measured weight, not a spec sheet.
+  </p>
+  <ol class="steps">
+    <li>Open an item and tap <strong>Saved to locker</strong>, or add gear directly from
+      <strong>Gear locker</strong> on the home screen.</li>
+    <li>In any list, use <strong>+ Add item</strong> and your locker entries appear in the
+      type-ahead alongside the catalogue.</li>
+    <li>Or open the locker and add several items at once, choosing quantities as you go.</li>
+  </ol>
+  <p>
+    This is the fastest way to build a second list: put your kit in the locker once, then
+    assemble trip lists from it in a couple of minutes.
+  </p>
+</section>
+
+<!-- ───────────────────────── 6. BREAKDOWN ───────────────────────── -->
+<section id="breakdown">
+  <h2><span class="num">06</span>Reading the breakdown</h2>
+  <p>
+    The <strong>Breakdown</strong> tab is the reason Baseweight exists. A total tells you nothing
+    actionable; a breakdown tells you what to fix.
+  </p>
+  <ul>
+    <li><strong>The donut</strong> — your base weight split by category. Click or tap a slice to
+      isolate it. On a computer the list below jumps to that category and opens it.</li>
+    <li><strong>Ranked categories</strong> — heaviest first, with percentages. Expand any row to
+      see the items inside it.</li>
+    <li><strong>Heaviest items</strong> — your top ten single items. This is usually where the
+      easy wins hide.</li>
+    <li><strong>Pack vs bodyweight</strong> — add your bodyweight in Settings and you'll see your
+      pack as a percentage of it, against the rough 20% guideline.</li>
+  </ul>
+  <p>
+    On a wide screen the breakdown sits permanently beside your gear list, so the numbers move as
+    you edit. That live feedback is the fastest way to find weight — change a tent, watch the
+    donut shift.
+  </p>
+  <div class="note">
+    <b>Where to actually look</b>
+    The "big three" — shelter, sleep system and pack — are usually 50–60% of base weight between
+    them. If one of those isn't in your top three categories, something unusual is going on and
+    it's worth a look.
+  </div>
+</section>
+
+<!-- ───────────────────────── 7. CHECKLIST ───────────────────────── -->
+<section id="checklist">
+  <h2><span class="num">07</span>Packing checklist</h2>
+  <p>
+    The <strong>Checklist</strong> tab turns the same list into a tick-off sheet for packing
+    night. Tap items as they go in the pack and watch the progress bar fill. Use
+    <strong>Reset</strong> before your next trip — it clears the ticks, not the gear.
+  </p>
+</section>
+
+<!-- ───────────────────────── 8. INSTALL ───────────────────────── -->
+<section id="install">
+  <h2><span class="num">08</span>Install it on your phone</h2>
+  <p>
+    Baseweight is a web app, so there's nothing to download from an app store. Add it to your home
+    screen and it behaves like a normal app — its own icon, full screen, no browser bars, and it
+    <strong>works offline</strong>, which matters at a trailhead with no signal.
+  </p>
+
+  <div id="already" class="note" style="display:none">
+    <b>You're already running it as an app ✓</b>
+    Baseweight is open in standalone mode right now, so it's installed on this device. Nothing to do.
+  </div>
+
+  <div id="ios-browser-warning" class="warn" style="display:none">
+    <b>You'll need Safari for this</b>
+    On iPhone and iPad, only <strong>Safari</strong> can add an app to the home screen — Chrome,
+    Firefox and Edge on iOS can't, no matter what their menus suggest. Open Baseweight in Safari
+    first, then follow the steps below.
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tab-ios" aria-selected="false" aria-controls="p-ios">iPhone / iPad</button>
+    <button role="tab" id="tab-android" aria-selected="false" aria-controls="p-android">Android</button>
+    <button role="tab" id="tab-desktop" aria-selected="false" aria-controls="p-desktop">Computer</button>
+  </div>
+
+  <div class="panel" id="p-ios" role="tabpanel" aria-labelledby="tab-ios">
+    <ol class="steps">
+      <li>Open Baseweight in <strong>Safari</strong>.</li>
+      <li>Tap the <strong>Share</strong> button — the square with an arrow coming out of it, at the
+        bottom of the screen (or top right on iPad).</li>
+      <li>Scroll down the share sheet and tap <strong>Add to Home Screen</strong>.</li>
+      <li>Tap <strong>Add</strong> in the top right.</li>
+    </ol>
+    <p>The Baseweight icon appears on your home screen and opens full screen from then on.</p>
+  </div>
+
+  <div class="panel" id="p-android" role="tabpanel" aria-labelledby="tab-android">
+    <ol class="steps">
+      <li>Open Baseweight in <strong>Chrome</strong>.</li>
+      <li>Tap the <strong>⋮</strong> menu, top right.</li>
+      <li>Tap <strong>Add to Home screen</strong> or <strong>Install app</strong> — the wording
+        varies by Android version.</li>
+      <li>Confirm with <strong>Install</strong>.</li>
+    </ol>
+    <p>Chrome often shows an "Install app" prompt on its own after a couple of visits.</p>
+  </div>
+
+  <div class="panel" id="p-desktop" role="tabpanel" aria-labelledby="tab-desktop">
+    <ol class="steps">
+      <li>Open Baseweight in <strong>Chrome</strong> or <strong>Edge</strong>.</li>
+      <li>Look for the install icon in the address bar — a monitor with a downward arrow.</li>
+      <li>Click it, then <strong>Install</strong>.</li>
+    </ol>
+    <p>
+      No install icon? Use the <strong>⋮</strong> menu → <strong>Cast, save and share</strong> →
+      <strong>Install page as app</strong>. Safari on macOS: <strong>File</strong> →
+      <strong>Add to Dock</strong>.
+    </p>
+  </div>
+
+  <p class="detected" id="detected"></p>
+</section>
+
+<!-- ───────────────────────── 9. SHARE ───────────────────────── -->
+<section id="share">
+  <h2><span class="num">09</span>Sharing your list</h2>
+  <p>Open <strong>Share &amp; transfer</strong> from the home screen. There are three ways to share.</p>
+  <h3>A read-only link</h3>
+  <p>
+    <strong>Copy shareable breakdown link</strong> gives you a URL containing a snapshot of your
+    list. Anyone who opens it sees your gear and a full interactive breakdown, read-only — they
+    can't change anything, and it doesn't touch their own lists.
+  </p>
+  <p>
+    The whole list is encoded <em>inside the link itself</em>, so nothing is uploaded and there's
+    no account involved. It's a frozen snapshot: edit your list afterwards and the old link still
+    shows the old version. Send a fresh link when you want to share an update.
+  </p>
+  <div class="note">
+    <b>Your bodyweight is opt-in</b>
+    Bodyweight is only included if you leave the toggle on in Settings. It can't be partially
+    hidden — pack weight is visible, so any ratio would give it away — which is why it's a single
+    on/off choice. Prices are never shared.
+  </div>
+  <h3>An image</h3>
+  <p>
+    <strong>Share as image</strong> renders your gear list, and
+    <strong>Share breakdown report as image</strong> renders the charts — both as clean images for
+    Instagram, a forum post or a video.
+  </p>
+  <h3>CSV</h3>
+  <p>
+    <strong>Export as CSV</strong> gives you a spreadsheet of every item. Useful for your own
+    analysis, or for moving a list somewhere else.
+  </p>
+</section>
+
+<!-- ───────────────────────── 10. BACKUP ───────────────────────── -->
+<section id="backup">
+  <h2><span class="num">10</span>Backup, restore &amp; CSV</h2>
+  <p>
+    Open <strong>Backup &amp; restore</strong> from the home screen.
+  </p>
+  <ul>
+    <li><strong>Back up all</strong> downloads a single file containing every list, your gear
+      locker and your settings. Keep it somewhere safe — cloud storage, or email it to yourself.</li>
+    <li><strong>Restore from file</strong> loads that file back. Use it to move everything to a new
+      phone or laptop, or to undo a mess.</li>
+    <li><strong>Import a CSV as new list</strong> brings in a list from a spreadsheet — handy if
+      you're coming from LighterPack or a gear spreadsheet of your own.</li>
+  </ul>
+  <div class="warn">
+    <b>Please do this before a big trip</b>
+    Restoring replaces what's currently there. And because your data lives only in this browser
+    (see below), a backup is the only copy that survives a lost phone or a cleared cache.
+  </div>
+</section>
+
+<!-- ───────────────────────── 11. DATA ───────────────────────── -->
+<section id="data">
+  <h2><span class="num">11</span>Where your data lives</h2>
+  <p>
+    Baseweight has <strong>no accounts and no server</strong>. Your lists are stored in your own
+    browser, on your own device. Nothing is uploaded, nothing is tracked, and nobody — including
+    me — can see your gear.
+  </p>
+  <p>That's good for privacy, and it has two consequences worth understanding:</p>
+  <ul>
+    <li><strong>Your lists don't follow you between devices.</strong> A list made on your phone
+      won't appear on your laptop. Use a backup file to move it across.</li>
+    <li><strong>Clearing your browser data deletes your lists.</strong> "Clear browsing data",
+      "Remove website data", or uninstalling the home-screen app can all wipe it, with no way back.</li>
+  </ul>
+  <div class="warn">
+    <b>So: back up occasionally</b>
+    It takes five seconds and it's the only safety net there is. Accounts and sync are on the
+    roadmap — until then, the backup file is your insurance.
+  </div>
+</section>
+
+<!-- ───────────────────────── 12. FAQ ───────────────────────── -->
+<section id="faq">
+  <h2><span class="num">12</span>Common questions</h2>
+
+  <h3>Can I switch between grams and ounces?</h3>
+  <p>
+    Yes — <strong>Settings</strong> → units. It converts everything you've already entered, so
+    switch whenever you like. You can also enter an individual item in a different unit from the
+    one your list displays.
+  </p>
+
+  <h3>Does it cost anything?</h3>
+  <p>Baseweight is free, with no ads and no accounts.</p>
+
+  <h3>Does it work offline?</h3>
+  <p>
+    Yes, once you've opened it once — and properly so if you've added it to your home screen.
+    Everything runs on your device.
+  </p>
+
+  <h3>Why is my base weight lower than I expected?</h3>
+  <p>
+    Almost always because something is tagged <strong>worn</strong> or <strong>consumable</strong>
+    that shouldn't be — or the other way round. Open the Breakdown tab and expand the categories;
+    tagged items are marked, so mistakes are easy to spot.
+  </p>
+
+  <h3>Can I have more than one list?</h3>
+  <p>
+    As many as you like. <strong>Your lists</strong> → <strong>New list</strong>, or duplicate an
+    existing one and edit it down.
+  </p>
+
+  <h3>I opened my share link and got a 404</h3>
+  <p>
+    Share links point at the viewer on this site. If you saved a link from a very early version,
+    generate a fresh one from <strong>Share &amp; transfer</strong>.
+  </p>
+
+  <h3>Something's broken or missing</h3>
+  <p>
+    Baseweight is built and maintained by one person. If you hit a bug or want a feature, the
+    quickest way to reach me is a comment on the
+    <a href="https://www.youtube.com/@jackbrookes" target="_blank" rel="noopener noreferrer">YouTube channel</a>.
+  </p>
+</section>
+
+<footer>
+  <p style="margin-bottom:16px">
+    <a class="cta" id="open-app" href="../">Open Baseweight</a>
+    <a class="cta ghost" href="https://www.youtube.com/@jackbrookes" target="_blank" rel="noopener noreferrer">Watch on YouTube</a>
+  </p>
+  <p>Built by Jack Brookes · No-BS Hiking</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- platform detection for the install section ----------
+     Deliberately conservative: detection only reorders the tabs, it never hides
+     the other platforms, so a wrong guess costs the reader one click. */
+  var ua = navigator.userAgent || "";
+  // Test Android first. The second half of the iOS check is the standard iPadOS 13+
+  // workaround (it reports itself as desktop Safari on MacIntel), but that heuristic
+  // will also match an Android device being emulated on a Mac — so let an explicit
+  // Android UA win before falling back to it.
+  var isAndroid = /Android/.test(ua);
+  var isIOS = !isAndroid && (/iPad|iPhone|iPod/.test(ua) ||
+              (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
+  // Chrome and Firefox on iOS are WebKit wrappers and cannot install PWAs at all.
+  var isIOSNonSafari = isIOS && (/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua));
+  var standalone = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) ||
+                   navigator.standalone === true;
+
+  var tabs = {
+    ios:     { btn: document.getElementById("tab-ios"),     panel: document.getElementById("p-ios") },
+    android: { btn: document.getElementById("tab-android"), panel: document.getElementById("p-android") },
+    desktop: { btn: document.getElementById("tab-desktop"), panel: document.getElementById("p-desktop") }
+  };
+
+  function show(key){
+    Object.keys(tabs).forEach(function(k){
+      var on = k === key;
+      tabs[k].btn.setAttribute("aria-selected", on ? "true" : "false");
+      tabs[k].panel.classList.toggle("on", on);
+    });
+  }
+  Object.keys(tabs).forEach(function(k){
+    tabs[k].btn.addEventListener("click", function(){ show(k); });
+  });
+
+  var detected = isIOS ? "ios" : isAndroid ? "android" : "desktop";
+  show(detected);
+
+  var label = { ios: "iPhone or iPad", android: "Android", desktop: "a computer" }[detected];
+  document.getElementById("detected").textContent =
+    "Showing steps for " + label + " — switch tabs above if that's not right.";
+
+  if (isIOSNonSafari) document.getElementById("ios-browser-warning").style.display = "block";
+  if (standalone) {
+    document.getElementById("already").style.display = "block";
+    document.getElementById("detected").textContent = "";
+  }
+
+  /* ---------- "Open Baseweight" link ----------
+     The guide sits at <site root>/howto/, so ../ is the site root. Where the app
+     itself lives depends on the deploy layout, so this is the one value to change
+     if the app is not served from the root. */
+  var APP_PATH = "../";
+  var link = document.getElementById("open-app");
+  if (link) link.setAttribute("href", APP_PATH);
+})();
+</script>
+</body>
+</html>
