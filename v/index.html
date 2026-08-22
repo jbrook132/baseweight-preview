@@ -110,6 +110,20 @@
   .made span{font-family:var(--mono);font-size:11px;color:rgba(246,241,230,.65)}
 
   footer{text-align:center;font-family:var(--mono);font-size:10.5px;color:#8A8271;padding:0 18px 28px}
+
+  /* Import CTA — the viewer is read-only, but the payload already holds the whole list,
+     so handing it to the app is just a navigation. */
+  .import-wrap{margin:18px 0 6px}
+  .import-btn{
+    display:flex;align-items:center;justify-content:center;gap:9px;width:100%;
+    box-sizing:border-box;padding:14px 16px;border:none;border-radius:14px;
+    background:#3A6B4F;color:#fff;font-family:'Archivo',sans-serif;font-weight:700;
+    font-size:15.5px;cursor:pointer;text-decoration:none;
+  }
+  .import-note{
+    font-family:'JetBrains Mono',monospace;font-size:11px;color:#6B6353;
+    text-align:center;margin-top:9px;line-height:1.5;
+  }
 </style>
 </head>
 <body>
@@ -169,6 +183,11 @@
   <div class="err" id="err" hidden>
     <b>Couldn't open this list</b>
     <p>The link looks incomplete — it may have been cut short when it was copied. Ask for it to be sent again.</p>
+  </div>
+
+  <div class="import-wrap" id="import-wrap" hidden>
+    <a class="import-btn" id="import-btn" href="#">Add this list to my Baseweight</a>
+    <p class="import-note" id="import-note">Adds a copy to your own lists · nothing you already have is changed</p>
   </div>
 
   <a class="made" href="https://baseweight.live" id="cta">
@@ -385,6 +404,26 @@
   });
 
   paintStats(); paintCats(); syncBwField(); paintGauge();
+})();
+</script>
+
+<script>
+(function(){
+  "use strict";
+  var frag = location.hash.slice(1);
+  var wrap = document.getElementById("import-wrap");
+  var btn  = document.getElementById("import-btn");
+  if (!frag || !wrap || !btn) return;               // nothing to import
+
+  // Where does the app live? It records its own location on every run, and it is the
+  // same origin as this viewer, so prefer that over guessing. Falls back to the site
+  // root for someone who has landed here without ever opening the app on this device.
+  var appUrl;
+  try { appUrl = localStorage.getItem("baseweight:appUrl") || ""; } catch (e) { appUrl = ""; }
+  if (!appUrl) appUrl = new URL("../", location.href).href;
+
+  btn.setAttribute("href", appUrl + "#import=" + frag);
+  wrap.hidden = false;
 })();
 </script>
 </body>
