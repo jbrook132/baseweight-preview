@@ -214,6 +214,7 @@
     <li><a href="#install">Install it on your phone</a></li>
     <li><a href="#share">Sharing your list</a></li>
     <li><a href="#backup">Backup, restore &amp; CSV</a></li>
+    <li><a href="#move">Phone ↔ laptop</a></li>
     <li><a href="#data">Where your data lives</a></li>
     <li><a href="#faq">Common questions</a></li>
   </ol>
@@ -524,7 +525,7 @@
   </p>
   <h3>CSV</h3>
   <p>
-    <strong>Export as CSV</strong> gives you a spreadsheet of every item. Useful for your own
+    <strong>Export … as CSV</strong> gives you a spreadsheet of every item. Useful for your own
     analysis, or for moving a list somewhere else.
   </p>
 </section>
@@ -536,9 +537,9 @@
     Open <strong>Backup &amp; restore</strong> from the home screen.
   </p>
   <ul>
-    <li><strong>Back up all</strong> downloads a single file containing every list, your gear
+    <li><strong>Back up everything</strong> downloads a single file containing every list, your gear
       locker and your settings. Keep it somewhere safe — cloud storage, or email it to yourself.</li>
-    <li><strong>Restore from file</strong> loads that file back. Use it to move everything to a new
+    <li><strong>Restore from a backup</strong> loads that file back. Use it to move everything to a new
       phone or laptop, or to undo a mess.</li>
     <li><strong>Import a CSV as new list</strong> brings in a list from a spreadsheet — handy if
       you're coming from LighterPack or a gear spreadsheet of your own.</li>
@@ -550,9 +551,75 @@
   </div>
 </section>
 
+<!-- ───────────────────────── 11. MOVING DEVICES ───────────────────────── -->
+<section id="move">
+  <h2><span class="num">11</span>Moving a list between phone and laptop</h2>
+  <p>
+    Baseweight has no accounts, so nothing syncs on its own — a list you build on your phone
+    won't turn up on your laptop. You move it across yourself with a file, which takes about a
+    minute. Which method you want depends on whether the other device already has lists you
+    care about.
+  </p>
+
+  <h3>Moving everything — best for a new phone or laptop</h3>
+  <ol class="steps">
+    <li>On the device that <em>has</em> your lists: <strong>Backup &amp; restore</strong> →
+      <strong>Back up everything</strong>. That's one file containing every list, your gear
+      locker and your settings.</li>
+    <li>Get the file onto the other device — see below.</li>
+    <li>On the other device: <strong>Backup &amp; restore</strong> →
+      <strong>Restore from a backup</strong> → pick the file → confirm
+      <strong>Replace everything</strong>.</li>
+  </ol>
+  <div class="warn">
+    <b>Restoring replaces — it doesn't merge</b>
+    Whatever is already in Baseweight on that device gets overwritten by the backup. That's
+    exactly right when you're setting up a new phone. If the other device has lists you want to
+    keep, use the single-list method below instead.
+  </div>
+
+  <h3>Moving one list — best when both devices are in use</h3>
+  <ol class="steps">
+    <li>Open the list you want to move, then <strong>Share &amp; transfer</strong> →
+      <strong>Export … as CSV</strong>.</li>
+    <li>Get the file onto the other device.</li>
+    <li>There: <strong>Share &amp; transfer</strong> →
+      <strong>Import a CSV as new list</strong>.</li>
+  </ol>
+  <p>
+    This <em>adds</em> a list instead of replacing anything, so it's the safe option when you're
+    using both devices. Categories, quantities, weights, units, prices and both the
+    <strong>worn</strong> and <strong>consumable</strong> tags all survive the round trip. The one
+    thing that doesn't is starred items — stars come back cleared, so re-star anything you rely on.
+  </p>
+
+  <h3>Getting the file across</h3>
+  <ul>
+    <li><strong>iPhone ↔ Mac</strong> — AirDrop is quickest.</li>
+    <li><strong>Anything ↔ anything</strong> — email it to yourself and open the attachment on the
+      other device.</li>
+    <li><strong>Cloud storage</strong> — save it to iCloud Drive, Google Drive or Dropbox on one
+      device, then open it from the other.</li>
+    <li><strong>Android ↔ PC</strong> — a USB cable, or Google Drive.</li>
+  </ul>
+
+  <div class="note">
+    <b>A share link won't move a list</b>
+    Share links are a read-only snapshot for showing someone your kit. They open in the viewer and
+    can't be imported back into the app, so use a backup file or a CSV to actually move a list.
+  </div>
+
+  <div class="note">
+    <b>Editing on both devices?</b>
+    There's no merging, so pick one device as the master and copy in one direction. If you edit the
+    same list in both places, whichever file you import last wins and the other set of edits is
+    gone. Accounts and proper sync are on the roadmap.
+  </div>
+</section>
+
 <!-- ───────────────────────── 11. DATA ───────────────────────── -->
 <section id="data">
-  <h2><span class="num">11</span>Where your data lives</h2>
+  <h2><span class="num">12</span>Where your data lives</h2>
   <p>
     Baseweight has <strong>no accounts and no server</strong>. Your lists are stored in your own
     browser, on your own device. Nothing is uploaded, nothing is tracked, and nobody — including
@@ -574,7 +641,7 @@
 
 <!-- ───────────────────────── 12. FAQ ───────────────────────── -->
 <section id="faq">
-  <h2><span class="num">12</span>Common questions</h2>
+  <h2><span class="num">13</span>Common questions</h2>
 
   <h3>Can I switch between grams and ounces?</h3>
   <p>
