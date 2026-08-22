@@ -182,6 +182,24 @@
     text-align:center;color:var(--ink-soft);font-size:14.5px;
   }
   footer a{margin:0 8px;display:inline-block}
+  /* Fixed return bar — phones only. On a long guide the footer link is a lot of
+     scrolling away, so keep a way back to the app within thumb reach at all times.
+     Desktop keeps the footer CTA, where the page is short enough to navigate. */
+  .return-bar{
+    display:none;position:fixed;left:0;right:0;bottom:0;z-index:20;
+    background:var(--paper);border-top:1px solid var(--line);
+    padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));
+  }
+  .return-bar a{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    background:var(--accent);color:#fff;text-decoration:none;
+    padding:13px 18px;border-radius:12px;font-weight:700;font-size:15.5px;
+  }
+  @media(max-width:700px){
+    .return-bar{display:block}
+    body{padding-bottom:96px}   /* keep the footer clear of the bar */
+  }
+
   .screenshot-slot{
     border:2px dashed var(--line);border-radius:14px;padding:26px 16px;text-align:center;
     color:var(--ink-soft);font-family:'JetBrains Mono',monospace;font-size:12px;
@@ -714,6 +732,16 @@
 
 </div>
 
+<div class="return-bar">
+  <a id="return-app" href="../">
+    <svg width="17" height="13" viewBox="0 0 120 88" fill="none" aria-hidden="true">
+      <path d="M8 80 L44 16 L64 50 L78 28 L112 80" stroke="#fff" stroke-width="11"
+            stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Back to Baseweight
+  </a>
+</div>
+
 <script>
 (function(){
   "use strict";
@@ -764,13 +792,18 @@
     document.getElementById("detected").textContent = "";
   }
 
-  /* ---------- "Open Baseweight" link ----------
-     The guide sits at <site root>/howto/, so ../ is the site root. Where the app
-     itself lives depends on the deploy layout, so this is the one value to change
-     if the app is not served from the root. */
-  var APP_PATH = "../";
-  var link = document.getElementById("open-app");
-  if (link) link.setAttribute("href", APP_PATH);
+  /* ---------- links back to the app ----------
+     The app writes its own location to localStorage on every run, and it is the same
+     origin as this guide, so read that rather than hardcoding a path that differs
+     between the preview and production layouts. Falls back to the site root for a
+     reader who has never opened the app on this device. */
+  var appUrl;
+  try { appUrl = localStorage.getItem("baseweight:appUrl") || ""; } catch (e) { appUrl = ""; }
+  if (!appUrl) appUrl = new URL("../", location.href).href;
+  ["open-app", "return-app"].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.setAttribute("href", appUrl);
+  });
 })();
 </script>
 </body>
